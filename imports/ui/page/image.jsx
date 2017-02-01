@@ -3,6 +3,7 @@ import { createContainer } from 'meteor/react-meteor-data'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table'
 import IconButton from 'material-ui/IconButton/IconButton'
 import Refresh from 'material-ui/svg-icons/navigation/refresh'
+import moment from 'moment'
 
 
 
@@ -36,24 +37,17 @@ class Image extends Component {
                             <TableHeaderColumn>IMAGE ID</TableHeaderColumn>
                             <TableHeaderColumn>CREATED</TableHeaderColumn>
                             <TableHeaderColumn>SIZE</TableHeaderColumn>
-                            <TableHeaderColumn width='10%'>
-                                <IconButton tooltip='刷新' onClick={() => this.props.refresh()} >
-                                    <Refresh />
-                                </IconButton>
-                            </TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody showRowHover={true} displayRowCheckbox={false}>
                         {
                             this.props.images.map(e => {
-                                return <TableRow key={e._id}>
-                                    <TableRowColumn>{e.Id}</TableRowColumn>
+                                return <TableRow key={e.IMAGE_ID}>
+                                    <TableRowColumn>{e.REPOSITORY}</TableRowColumn>
                                     <TableRowColumn>{e.TAG}</TableRowColumn>
                                     <TableRowColumn>{e.IMAGE_ID}</TableRowColumn>
                                     <TableRowColumn>{e.CREATED}</TableRowColumn>
                                     <TableRowColumn>{e.SIZE}</TableRowColumn>
-                                    <TableRowColumn width='10%'>
-                                    </TableRowColumn>
                                 </TableRow>
                             })
                         }
@@ -84,7 +78,15 @@ export default createContainer(({ params }) => {
         refresh:()=>{
             Meteor.call('image.refresh')
         },
-        images: ImageData.find(),
+        images: ImageData.find().fetch().map(e=>{
+            return {
+                REPOSITORY:e.RepoTags[0].split(':')[0],
+                TAG:e.RepoTags[0].split(':')[1],
+                IMAGE_ID:e.Id.split(':')[1].slice(0,12),
+                CREATED:moment(new Date(e.Created*1000)).format('YYYY-MM-DD'),
+                SIZE:e.Size>=1000*1000?Math.round(e.Size/1000/1000)+' MB':Math.round(e.Size/1000)+' kB'
+            }
+        }),
     }
 }, Image)
 
