@@ -1,19 +1,19 @@
 
-import React from 'react';
-import { Router, Route, IndexRedirect, browserHistory } from 'react-router';
+import React from 'react'
+import { Router, Route, IndexRedirect, browserHistory } from 'react-router'
 
 // route components
-import Root from '../../ui/layout/root.jsx';
-import Home from '../../ui/layout/home.jsx';
+import Root from '../../ui/layout/root.jsx'
+import Home from '../../ui/layout/home.jsx'
 
 
-import Login from '../../ui/page/login.jsx';
+import Login from '../../ui/page/login.jsx'
 
-import Dashboard from '../../ui/page/dashboard.jsx';
-import Image from '../../ui/page/image.jsx';
-import Network from '../../ui/page/network.jsx';
-import Volume from '../../ui/page/volume.jsx';
-import Process from '../../ui/page/process.jsx';
+import Dashboard from '../../ui/page/dashboard.jsx'
+import Image from '../../ui/page/image.jsx'
+import Network from '../../ui/page/network.jsx'
+import Volume from '../../ui/page/volume.jsx'
+import Process from '../../ui/page/process.jsx'
 
 
 const onLogin = (nextState, replace) => Meteor.userId() ? replace({ pathname: '/home' }) : null
@@ -43,4 +43,4 @@ export const renderRoutes = () => (
             <Route path="*" onEnter={notFound} />
         </Route>
     </Router>
-);
+)
