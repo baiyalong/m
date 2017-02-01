@@ -8,7 +8,6 @@ import Home from '../../ui/layout/home.jsx';
 
 
 import Login from '../../ui/page/login.jsx';
-import Register from '../../ui/page/register.jsx';
 
 import Dashboard from '../../ui/page/dashboard.jsx';
 import Image from '../../ui/page/image.jsx';
@@ -19,10 +18,10 @@ import Process from '../../ui/page/process.jsx';
 
 const onLogin = (nextState, replace) => Meteor.userId() ? replace({ pathname: '/home' }) : null
 
-const onHome = (nextState, replace) =>null //!Meteor.userId() ? replace({ pathname: '/login' }) : null
+const onHome = (nextState, replace) => !Meteor.userId() ? replace({ pathname: '/login' }) : null
 
 const notFound = (nextState, replace) => {
-    var paths = ['/', '/login', '/register', '/home', '/dashboard', '/image','/network','/volume','/process']
+    var paths = ['/', '/login', '/home', '/dashboard', '/image','/network','/volume','/process']
     if (!paths.includes(nextState.location.pathname))
         replace({ pathname: '/home' })
 }
@@ -33,7 +32,6 @@ export const renderRoutes = () => (
         <Route path="/" component={Root}>
             <IndexRedirect to="/login" />
             <Route path="/login" component={Login} onEnter={onLogin}/>
-            <Route path="/register" component={Register} onEnter={onLogin}/>
             <Route path="/home" component={Home} onEnter={onHome}>
                 <IndexRedirect to="/dashboard" />
                 <Route path="/dashboard" component={Dashboard} />

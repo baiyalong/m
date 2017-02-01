@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
 import { indigo500 } from 'material-ui/styles/colors';
+import { Accounts } from 'meteor/accounts-base'
 
 
 const style = {
@@ -30,13 +31,13 @@ const style = {
 
 class Login extends Component {
 
-  login() {
+  login(b) {
     let username = this.refs.username.input.value;
     let password = this.refs.password.input.value;
-    this.props.login(username, password)
+    b?this.props.login(username, password):this.props.register(username, password)
   }
   enter(e) {
-    if (e.key === 'Enter') this.login()
+    if (e.key === 'Enter') this.login(true)
   }
   render() {
     return (
@@ -52,7 +53,8 @@ class Login extends Component {
           <br />
           <br />
           <br />
-          <RaisedButton label="登录" style={{ width: 256 }} backgroundColor={indigo500} labelColor='white' onClick={this.login.bind(this)} />
+          <RaisedButton label="注册" style={{ width: 120,margin:10 }} secondary={true} labelColor='white' onClick={()=>this.login(false)} />
+          <RaisedButton label="登录" style={{ width: 120,margin:10 }} primary={true} labelColor='white' onClick={()=>this.login(true)} />
         </Paper>
       </div>
     )
@@ -65,6 +67,18 @@ class Login extends Component {
 export default createContainer(({ params }) => {
   return {
     title: '开发环境',
+
+    register:(username, password)=>async.series([
+      callback => {
+        var error = null;
+        if (password == '') error = '密码不能为空！'
+        if (username == '') error = '用户名不能为空！'
+        callback(error ? new Error(error) : null)
+      },
+      callback => Accounts.createUser({username, password}, callback),
+      callback => Meteor.logoutOtherClients(callback)
+    ], err => err ? Session.set('Info', { message: err.message, timestamp: Date() }) : browserHistory.push('home')),
+
     login: (username, password) => async.series([
       callback => {
         var error = null;
@@ -74,7 +88,7 @@ export default createContainer(({ params }) => {
       },
       callback => Meteor.loginWithPassword(username, password, callback),
       callback => Meteor.logoutOtherClients(callback)
-    ], err => err ? Session.set('Info', { message: err.message, timestamp: Date() }) : browserHistory.push('admin'))
+    ], err => err ? Session.set('Info', { message: err.message, timestamp: Date() }) : browserHistory.push('home'))
   };
 }, Login);
 

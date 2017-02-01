@@ -47,15 +47,6 @@ class Menu extends Component {
     }
 }
 
-Menu.propTypes = {
-    title: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-}
-
-Menu.defaultProps = {
-    title: '标题',
-    username: '用户名',
-}
 
 
 export default Menu;
