@@ -1,12 +1,11 @@
 import Docker from 'dockerode'
-import Image from './schema'
-import shell from 'shelljs'
+import Network from './schema'
 
 docker = new Docker()
 
 Meteor.methods({
-    'network.create' () {
-       var user_id = Meteor.userId()
-
+    'network.create' (name) {
+        var user_id = this.userId
+        return Meteor.wrapAsync(docker.createNetwork, docker)({ name, CheckDuplicate: true })
     }
 })
