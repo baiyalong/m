@@ -32,22 +32,20 @@ class Image extends Component {
                 <Table height={this.state.height + 'px'}>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                         <TableRow>
-                            <TableHeaderColumn>REPOSITORY</TableHeaderColumn>
-                            <TableHeaderColumn>TAG</TableHeaderColumn>
-                            <TableHeaderColumn>IMAGE ID</TableHeaderColumn>
-                            <TableHeaderColumn>CREATED</TableHeaderColumn>
-                            <TableHeaderColumn>SIZE</TableHeaderColumn>
+                            <TableHeaderColumn width='15%'>IMAGE ID</TableHeaderColumn>
+                            <TableHeaderColumn>REPO TAGS</TableHeaderColumn>
+                            <TableHeaderColumn width='10%'>CREATED</TableHeaderColumn>
+                            <TableHeaderColumn width='10%'>SIZE</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody showRowHover={true} displayRowCheckbox={false}>
                         {
                             this.props.images.map(e => {
                                 return <TableRow key={e.IMAGE_ID}>
-                                    <TableRowColumn>{e.REPOSITORY}</TableRowColumn>
-                                    <TableRowColumn>{e.TAG}</TableRowColumn>
-                                    <TableRowColumn>{e.IMAGE_ID}</TableRowColumn>
-                                    <TableRowColumn>{e.CREATED}</TableRowColumn>
-                                    <TableRowColumn>{e.SIZE}</TableRowColumn>
+                                    <TableRowColumn width='15%'>{e.IMAGE_ID}</TableRowColumn>
+                                    <TableRowColumn>{e.REPO_TAGS}</TableRowColumn>
+                                    <TableRowColumn width='10%'>{e.CREATED}</TableRowColumn>
+                                    <TableRowColumn width='10%'>{e.SIZE}</TableRowColumn>
                                 </TableRow>
                             })
                         }
@@ -80,9 +78,8 @@ export default createContainer(({ params }) => {
         },
         images: ImageData.find().fetch().map(e=>{
             return {
-                REPOSITORY:e.RepoTags[0].split(':')[0],
-                TAG:e.RepoTags[0].split(':')[1],
                 IMAGE_ID:e.Id.split(':')[1].slice(0,12),
+                REPO_TAGS:JSON.stringify(e.RepoTags),
                 CREATED:moment(new Date(e.Created*1000)).format('YYYY-MM-DD'),
                 SIZE:e.Size>=1000*1000?Math.round(e.Size/1000/1000)+' MB':Math.round(e.Size/1000)+' kB'
             }
