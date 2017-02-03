@@ -1,5 +1,5 @@
 import Docker from 'dockerode'
-import Image from './schema'
+import Network from './schema'
 
 docker = new Docker()
 
