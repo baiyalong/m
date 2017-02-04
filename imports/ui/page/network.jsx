@@ -3,7 +3,9 @@ import { createContainer } from 'meteor/react-meteor-data'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table'
 import moment from 'moment'
 
-
+const lineHeight = {
+    height:12
+}
 
 const ellipsis = {
     textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'
@@ -30,20 +32,22 @@ class Network extends Component {
                 <Table height={this.state.height + 'px'}>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                         <TableRow>
-                            <TableHeaderColumn width='15%'>Network ID</TableHeaderColumn>
-                            <TableHeaderColumn>REPO TAGS</TableHeaderColumn>
-                            <TableHeaderColumn width='10%'>CREATED</TableHeaderColumn>
-                            <TableHeaderColumn width='10%'>SIZE</TableHeaderColumn>
+                            <TableHeaderColumn>Network ID</TableHeaderColumn>
+                            <TableHeaderColumn>NAME</TableHeaderColumn>
+                            <TableHeaderColumn>IPAM_SUBNET</TableHeaderColumn>
+                            <TableHeaderColumn>IPAM_GATEWAY</TableHeaderColumn>
+                            <TableHeaderColumn>CREATED</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody showRowHover={true} displayRowCheckbox={false}>
                         {
-                            this.props.Networks.map(e => {
-                                return <TableRow key={e.Network_ID}>
-                                    <TableRowColumn width='15%'>{e.Network_ID}</TableRowColumn>
-                                    <TableRowColumn>{e.REPO_TAGS}</TableRowColumn>
-                                    <TableRowColumn width='10%'>{e.CREATED}</TableRowColumn>
-                                    <TableRowColumn width='10%'>{e.SIZE}</TableRowColumn>
+                            this.props.networks.map(e => {
+                                return <TableRow style={lineHeight} key={e.Network_ID}>
+                                    <TableRowColumn style={lineHeight}>{e.Network_ID}</TableRowColumn>
+                                    <TableRowColumn style={lineHeight}>{e.NAME}</TableRowColumn>
+                                    <TableRowColumn style={lineHeight}>{e.IPAM_SUBNET}</TableRowColumn>
+                                    <TableRowColumn style={lineHeight}>{e.IPAM_GATEWAY}</TableRowColumn>
+                                    <TableRowColumn style={lineHeight}>{e.CREATED}</TableRowColumn>
                                 </TableRow>
                             })
                         }
@@ -52,7 +56,7 @@ class Network extends Component {
                         <TableRow>
                             <TableRowColumn>
                                 <div style={{ position: 'relative', left: 0, top: '-15px' }}>
-                                    TOTAL: {this.props.Networks.length||0}
+                                    TOTAL: {this.props.networks.length||0}
                                 </div>
                             </TableRowColumn>
                         </TableRow>
@@ -66,18 +70,21 @@ class Network extends Component {
 
 
 import async from 'async'
+import NetworkData from '../../api/network/schema'
 
 export default createContainer(({ params }) => {
+    Meteor.subscribe('networks')
     return {
         refresh:()=>{
-            Meteor.call('Network.refresh')
+            Meteor.call('network.refresh')
         },
-        Networks: NetworkData.find().fetch().sort((a,b)=>a.Created<b.Created).map(e=>{
+        networks: NetworkData.find().fetch().sort((a,b)=>a.Created-b.Created).map(e=>{
             return {
-                Network_ID:e.Id.split(':')[1].slice(0,12),
-                REPO_TAGS:JSON.stringify(e.RepoTags),
-                CREATED:moment(new Date(e.Created*1000)).format('YYYY-MM-DD'),
-                SIZE:e.Size>=1000*1000?Math.round(e.Size/1000/1000)+' MB':Math.round(e.Size/1000)+' kB'
+                Network_ID:e.Id.slice(0,12),
+                NAME:e.Name,
+                IPAM_SUBNET:e.IPAM_Subnet,
+                IPAM_GATEWAY:e.IPAM_Gateway,
+                CREATED:moment(e.Created).format('YYYY-MM-DD')
             }
         }),
     }

@@ -9,13 +9,17 @@ Meteor.methods({
         res.forEach(e => {
             Image.upsert({
                 Id: e.Id
-            }, e)
+            }, {
+                Id: e.Id,
+                RepoTags: e.RepoTags,
+                Created: e.Created,
+                Size: e.Size
+            })
         })
-        Image.find({}, {fields: {
-                    Id
-                }})
+        Image
+            .find()
             .fetch()
-            .filter(e => res.find(r => r.Id == e.Id))
+            .filter(e => !res.find(r => r.Id == e.Id))
             .forEach(e => Image.remove({Id: e.Id}))
     }
 })

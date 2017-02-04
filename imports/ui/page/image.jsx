@@ -4,7 +4,9 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import IconButton from 'material-ui/IconButton/IconButton'
 import moment from 'moment'
 
-
+const lineHeight = {
+    height:12
+}
 
 const ellipsis = {
     textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'
@@ -33,18 +35,18 @@ class Image extends Component {
                         <TableRow>
                             <TableHeaderColumn width='15%'>IMAGE ID</TableHeaderColumn>
                             <TableHeaderColumn>REPO TAGS</TableHeaderColumn>
-                            <TableHeaderColumn width='10%'>CREATED</TableHeaderColumn>
                             <TableHeaderColumn width='10%'>SIZE</TableHeaderColumn>
+                            <TableHeaderColumn width='10%'>CREATED</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody showRowHover={true} displayRowCheckbox={false}>
                         {
                             this.props.images.map(e => {
-                                return <TableRow key={e.IMAGE_ID}>
-                                    <TableRowColumn width='15%'>{e.IMAGE_ID}</TableRowColumn>
-                                    <TableRowColumn>{e.REPO_TAGS}</TableRowColumn>
-                                    <TableRowColumn width='10%'>{e.CREATED}</TableRowColumn>
-                                    <TableRowColumn width='10%'>{e.SIZE}</TableRowColumn>
+                                return <TableRow key={e.IMAGE_ID} style={lineHeight}>
+                                    <TableRowColumn style={lineHeight} width='15%'>{e.IMAGE_ID}</TableRowColumn>
+                                    <TableRowColumn style={lineHeight}>{e.REPO_TAGS}</TableRowColumn>
+                                    <TableRowColumn style={lineHeight} width='10%'>{e.SIZE}</TableRowColumn>
+                                    <TableRowColumn style={lineHeight} width='10%'>{e.CREATED}</TableRowColumn>
                                 </TableRow>
                             })
                         }

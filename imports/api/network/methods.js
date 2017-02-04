@@ -5,19 +5,27 @@ var docker = new Docker()
 
 Meteor.methods({
     'network.refresh' () {
-        var res = Meteor.wrapAsync(docker.listNetworks, docker)({'Labels.user_id': this.userId})
-        console.log(res)
+        var res = Meteor.wrapAsync(docker.listNetworks, docker)()
+
+        res = res.filter(e => e.Labels.user_id == this.userId)
+
         res.forEach(e => {
             Network.upsert({
                 Id: e.Id
-            }, e)
+            }, {
+                Id: e.Id,
+                Name: e.Name,
+                Created: e.Created,
+                IPAM_Subnet: e.IPAM.Config[0].Subnet,
+                IPAM_Gateway: e.IPAM.Config[0].Gateway,
+                user_id: e.Labels.user_id
+            })
         })
-        Network.find({}, {fields: {
-                    Id
-                }})
+        Network
+            .find()
             .fetch()
-            .filter(e => res.find(r => r.Id == e.Id))
-            .forEach(e => Image.remove({Id: e.Id}))
+            .filter(e => e.user_id == this.userId && !res.find(r => r.Id == e.Id))
+            .forEach(e => Network.remove({Id: e.Id}))
     },
     'network.create' (name) {
         return Meteor.wrapAsync(docker.createNetwork, docker)({
