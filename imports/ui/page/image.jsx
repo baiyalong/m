@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react'
 import { createContainer } from 'meteor/react-meteor-data'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table'
 import IconButton from 'material-ui/IconButton/IconButton'
-import Refresh from 'material-ui/svg-icons/navigation/refresh'
 import moment from 'moment'
 
 
@@ -36,11 +35,6 @@ class Image extends Component {
                             <TableHeaderColumn>REPO TAGS</TableHeaderColumn>
                             <TableHeaderColumn width='10%'>CREATED</TableHeaderColumn>
                             <TableHeaderColumn width='10%'>SIZE</TableHeaderColumn>
-                            <TableHeaderColumn width='10%'>
-                                <IconButton tooltip='刷新' onClick={() => this.props.refresh()} >
-                                    <Refresh />
-                                </IconButton>
-                            </TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody showRowHover={true} displayRowCheckbox={false}>
@@ -51,8 +45,6 @@ class Image extends Component {
                                     <TableRowColumn>{e.REPO_TAGS}</TableRowColumn>
                                     <TableRowColumn width='10%'>{e.CREATED}</TableRowColumn>
                                     <TableRowColumn width='10%'>{e.SIZE}</TableRowColumn>
-                                    <TableHeaderColumn width='10%'>
-                                    </TableHeaderColumn>
                                 </TableRow>
                             })
                         }
@@ -83,7 +75,7 @@ export default createContainer(({ params }) => {
         refresh:()=>{
             Meteor.call('image.refresh')
         },
-        images: ImageData.find().fetch().sort((a,b)=>a.Created<b.Created).map(e=>{
+        images: ImageData.find().fetch().sort((a,b)=>a.Created-b.Created<0).map(e=>{
             return {
                 IMAGE_ID:e.Id.split(':')[1].slice(0,12),
                 REPO_TAGS:JSON.stringify(e.RepoTags),
