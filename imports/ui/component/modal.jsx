@@ -28,10 +28,14 @@ export default class Modal extends Component {
         ]
         const fields = {
             network : [
-                        { name: 'NAME', code: 'NAME', type: 'text' },
-                        // { name: 'SUBNET', code: 'SUBNET', type: 'text' },
-                        // { name: 'GATEWAY', code: 'GATEWAY', type: 'text' },
-                    ]
+                { name: 'NAME', code: 'NAME', type: 'text' },
+                // { name: 'SUBNET', code: 'SUBNET', type: 'text' },
+                // { name: 'GATEWAY', code: 'GATEWAY', type: 'text' },
+                    ],
+            volume:[
+                 { name: 'NAME', code: 'NAME', type: 'text' },
+                //  { name: 'MOUNTPOINT', code: 'MOUNTPOINT', type: 'text' },
+            ]
         } 
         const content = (
             this.props.action == 'remove'

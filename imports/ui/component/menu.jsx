@@ -10,6 +10,7 @@ import Image from 'material-ui/svg-icons/image/hdr-weak';
 import Network from 'material-ui/svg-icons/action/language';
 import Volume from 'material-ui/svg-icons/device/storage';
 import Process from 'material-ui/svg-icons/action/settings';
+import Instructions from 'material-ui/svg-icons/action/assignment';
 
 
 const style = {
@@ -41,6 +42,7 @@ class Menu extends Component {
                     <MenuItem primaryText="存储资源" leftIcon={<Volume />} onClick={() => this.nav('volume') }/>
                     <Divider />
                     <MenuItem primaryText="容器镜像" leftIcon={<Image />} onClick={() => this.nav('image') }/>
+                    <MenuItem primaryText="使用说明" leftIcon={<Instructions />} onClick={() => this.nav('instructions') }/>
                 </Menus>
             </Paper>
         )
