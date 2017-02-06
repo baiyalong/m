@@ -29,8 +29,8 @@ export default class Modal extends Component {
         const fields = {
             network : [
                         { name: 'NAME', code: 'NAME', type: 'text' },
-                        { name: 'SUBNET', code: 'SUBNET', type: 'text' },
-                        { name: 'GATEWAY', code: 'GATEWAY', type: 'text' },
+                        // { name: 'SUBNET', code: 'SUBNET', type: 'text' },
+                        // { name: 'GATEWAY', code: 'GATEWAY', type: 'text' },
                     ]
         } 
         const content = (

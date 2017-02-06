@@ -29,6 +29,11 @@ class Network extends Component {
         this.setState({ height: getTableHeight() })
     }
     openDialog(state) {
+        if(state.action=='remove'){
+            var o = this.refs
+            var a = Object.keys(o).filter(e=>o[e].props.selected)
+            if(a.length==0) return
+        }
         this.setState(Object.assign({ open: true }, state))
     }
     closeDialog(e) {
@@ -108,13 +113,13 @@ export default createContainer(({ params }) => {
             Meteor.call('network.refresh',callback)
         },
         create:(e)=>{
-            async.seires([
+            async.series([
                 callback=>Meteor.call('network.create',e,callback),
                 callback=>Meteor.call('network.refresh',callback)
             ],callback)
         },
         remove:(a)=>{
-            async.seires([
+            async.series([
                 callback=>Meteor.call('network.remove',a,callback),
                 callback=>Meteor.call('network.refresh',callback)
             ],callback)

@@ -25,22 +25,29 @@ Meteor.methods({
             .find()
             .fetch()
             .filter(e => e.user_id == this.userId && !res.find(r => r.Id == e.Id))
-            .forEach(e => Network.remove({
-                Id: e.Id
-            }))
+            .forEach(e => Network.remove({Id: e.Id}))
     },
     'network.create' (e) {
-        return Meteor.wrapAsync(docker.createNetwork, docker)({
-            Name: e.name,
-            CheckDuplicate: true,
-            Labels: {
-                user_id: this.userId
-            }
-        })
+        try {
+            Meteor.wrapAsync(docker.createNetwork, docker)({
+                Name: e.NAME,
+                CheckDuplicate: true,
+                Labels: {
+                    user_id: this.userId
+                }
+            })
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
     },
     'network.remove' (a) {
-        return a.forEach(id => Meteor.wrapAsync(docker.getNetwork(id).remove, docker)({
-            id
-        }))
-    },
+        try {
+            a.forEach(id => {
+                var network = docker.getNetwork(id)
+                Meteor.wrapAsync(network.remove, network)()
+            })
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
+    }
 })
