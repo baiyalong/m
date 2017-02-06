@@ -2,10 +2,12 @@ import React, { Component, PropTypes } from 'react'
 import { createContainer } from 'meteor/react-meteor-data'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table'
 import moment from 'moment'
+import IconButton from 'material-ui/IconButton/IconButton';
+import Insert from 'material-ui/svg-icons/content/add';
+import Remove from 'material-ui/svg-icons/content/remove';
+import Refresh from 'material-ui/svg-icons/navigation/refresh';
+import Modal from '../component/modal'
 
-const lineHeight = {
-    height:12
-}
 
 const ellipsis = {
     textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'
@@ -20,34 +22,49 @@ function getTableHeight() {
 class Network extends Component {
     constructor() {
         super()
-        this.state = { open: false, action: null, e: {}, height: getTableHeight() }
+        this.state = { open: false, action: null, e: {}, height: getTableHeight(), title:'网络资源', code:'network'}
         window.onresize = this.resize.bind(this)
     }
     resize() {
         this.setState({ height: getTableHeight() })
     }
+    openDialog(state) {
+        this.setState(Object.assign({ open: true }, state))
+    }
+    closeDialog(e) {
+        if (e) this[this.state.action](e);
+        this.setState({ open: false, action: null, e: {}})
+    }
+    create(e) {
+        this.props.create(e)
+    }
+    remove() {
+        var o = this.refs
+        var a = Object.keys(o).filter(e=>o[e].props.selected)
+        this.props.remove(a)
+    }
     render() {
         return (
             <div>
-                <Table height={this.state.height + 'px'}>
-                    <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                <Table height={this.state.height + 'px'} multiSelectable={true}>
+                    <TableHeader>
                         <TableRow>
                             <TableHeaderColumn>Network ID</TableHeaderColumn>
                             <TableHeaderColumn>NAME</TableHeaderColumn>
-                            <TableHeaderColumn>IPAM_SUBNET</TableHeaderColumn>
-                            <TableHeaderColumn>IPAM_GATEWAY</TableHeaderColumn>
+                            <TableHeaderColumn>SUBNET</TableHeaderColumn>
+                            <TableHeaderColumn>GATEWAY</TableHeaderColumn>
                             <TableHeaderColumn>CREATED</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
-                    <TableBody showRowHover={true} displayRowCheckbox={false}>
+                    <TableBody showRowHover={true} deselectOnClickaway={false}>
                         {
                             this.props.networks.map(e => {
-                                return <TableRow style={lineHeight} key={e.Network_ID}>
-                                    <TableRowColumn style={lineHeight}>{e.Network_ID}</TableRowColumn>
-                                    <TableRowColumn style={lineHeight}>{e.NAME}</TableRowColumn>
-                                    <TableRowColumn style={lineHeight}>{e.IPAM_SUBNET}</TableRowColumn>
-                                    <TableRowColumn style={lineHeight}>{e.IPAM_GATEWAY}</TableRowColumn>
-                                    <TableRowColumn style={lineHeight}>{e.CREATED}</TableRowColumn>
+                                return <TableRow  key={e.Network_ID} ref={e.Network_ID}>
+                                    <TableRowColumn >{e.Network_ID}</TableRowColumn>
+                                    <TableRowColumn >{e.NAME}</TableRowColumn>
+                                    <TableRowColumn >{e.IPAM_SUBNET}</TableRowColumn>
+                                    <TableRowColumn >{e.IPAM_GATEWAY}</TableRowColumn>
+                                    <TableRowColumn >{e.CREATED}</TableRowColumn>
                                 </TableRow>
                             })
                         }
@@ -59,10 +76,22 @@ class Network extends Component {
                                     TOTAL: {this.props.networks.length||0}
                                 </div>
                             </TableRowColumn>
+                            <TableRowColumn>
+                                <IconButton style={{float:'right'}} tooltip='刷新' tooltipPosition="top-center" onClick={() => this.props.refresh()} >
+                                    <Refresh />
+                                </IconButton>
+                                <IconButton style={{float:'right'}} tooltip='删除' tooltipPosition="top-center" onClick={() => this.openDialog({ action: 'remove' })} >
+                                    <Remove />
+                                </IconButton>
+                                <IconButton style={{float:'right'}} tooltip='添加' tooltipPosition="top-center" onClick={() => this.openDialog({ action: 'create' })} >
+                                    <Insert />
+                                </IconButton>
+                            </TableRowColumn>
                         </TableRow>
                     </TableFooter>
                 </Table>
 
+                <Modal {...this.state} closeDialog={(e) => this.closeDialog(e)}/>
             </div>
         )
     }
@@ -76,7 +105,19 @@ export default createContainer(({ params }) => {
     Meteor.subscribe('networks')
     return {
         refresh:()=>{
-            Meteor.call('network.refresh')
+            Meteor.call('network.refresh',callback)
+        },
+        create:(e)=>{
+            async.seires([
+                callback=>Meteor.call('network.create',e,callback),
+                callback=>Meteor.call('network.refresh',callback)
+            ],callback)
+        },
+        remove:(a)=>{
+            async.seires([
+                callback=>Meteor.call('network.remove',a,callback),
+                callback=>Meteor.call('network.refresh',callback)
+            ],callback)
         },
         networks: NetworkData.find().fetch().sort((a,b)=>a.Created-b.Created).map(e=>{
             return {
@@ -91,4 +132,4 @@ export default createContainer(({ params }) => {
 }, Network)
 
 
-// const callback = (err, res) => Session.set('Info', { level: err ? '错误' : '信息', message: err ? err.message : '操作成功', timestamp: Date() })
+const callback = (err, res) => Session.set('Info', { level: err ? '错误' : '信息', message: err ? err.message : '操作成功', timestamp: Date() })
