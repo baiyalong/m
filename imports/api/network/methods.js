@@ -5,9 +5,11 @@ var docker = new Docker()
 
 Meteor.methods({
     'network.refresh' () {
-        var res = Meteor.wrapAsync(docker.listNetworks, docker)()
-
-        res = res.filter(e => e.Labels.user_id == this.userId)
+        var res = Meteor.wrapAsync(docker.listNetworks, docker)({
+            filters: {
+                label: ['user_id=' + this.userId]
+            }
+        })
 
         res.forEach(e => {
             Network.upsert({
@@ -25,7 +27,7 @@ Meteor.methods({
             .find()
             .fetch()
             .filter(e => e.user_id == this.userId && !res.find(r => r.Id == e.Id))
-            .forEach(e => Network.remove({Id: e.Id}))
+            .forEach(e => Network.remove({ Id: e.Id }))
     },
     'network.create' (e) {
         try {

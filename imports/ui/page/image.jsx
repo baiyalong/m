@@ -3,6 +3,7 @@ import { createContainer } from 'meteor/react-meteor-data'
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableFooter } from 'material-ui/Table'
 import IconButton from 'material-ui/IconButton/IconButton'
 import moment from 'moment'
+import Refresh from 'material-ui/svg-icons/navigation/refresh';
 
 const lineHeight = {
     height:12
@@ -58,6 +59,11 @@ class Image extends Component {
                                     TOTAL: {this.props.images.length||0}
                                 </div>
                             </TableRowColumn>
+                            <TableRowColumn>
+                                <IconButton style={{float:'right'}} tooltip='刷新' tooltipPosition="top-center" onClick={() => this.props.refresh()} >
+                                    <Refresh />
+                                </IconButton>
+                            </TableRowColumn>
                         </TableRow>
                     </TableFooter>
                 </Table>
@@ -75,7 +81,7 @@ export default createContainer(({ params }) => {
     Meteor.subscribe('images')
     return {
         refresh:()=>{
-            Meteor.call('image.refresh')
+            Meteor.call('image.refresh',callback)
         },
         images: ImageData.find().fetch().sort((a,b)=>a.Created-b.Created<0).map(e=>{
             return {
@@ -89,4 +95,4 @@ export default createContainer(({ params }) => {
 }, Image)
 
 
-// const callback = (err, res) => Session.set('Info', { level: err ? '错误' : '信息', message: err ? err.message : '操作成功', timestamp: Date() })
+const callback = (err, res) => Session.set('Info', { level: err ? '错误' : '信息', message: err ? err.message : '操作成功', timestamp: Date() })

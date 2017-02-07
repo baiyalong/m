@@ -35,6 +35,14 @@ export default class Modal extends Component {
             volume:[
                  { name: 'NAME', code: 'NAME', type: 'text' },
                 //  { name: 'MOUNTPOINT', code: 'MOUNTPOINT', type: 'text' },
+            ],
+            process:[
+                {name:'NAME',code:'NAME',type:'text'},
+                {name:'IMAGE',code:'IMAGE',type:'text'},
+                {name:'NETWORK',code:'NETWORK',type:'text'},
+                {name:'NETWORK PORT',code:'NETWORK_PORT',type:'text'},
+                {name:'VOLUME',code:'VOLUME',type:'text'},
+                {name:'VOLUME PATH',code:'VOLUME_PATH',type:'text'},
             ]
         } 
         const content = (

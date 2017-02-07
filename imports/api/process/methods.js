@@ -5,32 +5,43 @@ var docker = new Docker()
 
 Meteor.methods({
     'process.refresh' () {
-        var res = Meteor.wrapAsync(docker.listVolumes, docker)()
-
-        res = res
-            .Volumes
-            .filter(e => e.Labels && e.Labels.user_id == this.userId)
+        var res = Meteor.wrapAsync(docker.listContainers, docker)({
+            all: true,
+            filters: {
+                label: ['user_id=' + this.userId]
+            }
+        })
 
         res.forEach(e => {
             Process.upsert({
-                Name: e.Name
+                Id: e.Id
             }, {
-                Name: e.Name,
-                Mountpoint: e.Mountpoint,
+                Id: e.Id,
+                Name: e.Names,
+                Image: e.Image,
+                Network: null,
+                Network_port: null,
+                Volume: null,
+                Volume_path: null,
+                Status: e.Status,
+                Created: e.Created,
                 user_id: e.Labels.user_id
             })
         })
         Process
             .find()
             .fetch()
-            .filter(e => e.user_id == this.userId && !res.find(r => r.Name == e.Name))
-            .forEach(e => Process.remove({Name: e.Name}))
+            .filter(e => e.user_id == this.userId && !res.find(r => r.Id == e.Id))
+            .forEach(e => Process.remove({ Id: e.Id }))
     },
     'process.create' (e) {
         try {
             Meteor.wrapAsync(docker.createContainer, docker)({
-                Name: e.NAME,
-                // DriverOpts: {     mountpoint: e.MOUNTPOINT },
+                name: e.NAME,
+                Image: e.IMAGE,
+                // NetworkingConfig: {},
+                // ExposedPorts: {},
+                // Volumes: {},
                 Labels: {
                     user_id: this.userId
                 }
@@ -41,8 +52,8 @@ Meteor.methods({
     },
     'process.remove' (a) {
         try {
-            a.forEach(name => {
-                var process = docker.getVolume(name)
+            a.forEach(id => {
+                var process = docker.getContainer(id)
                 Meteor.wrapAsync(process.remove, process)()
             })
         } catch (e) {

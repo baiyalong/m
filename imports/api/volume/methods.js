@@ -5,11 +5,15 @@ var docker = new Docker()
 
 Meteor.methods({
     'volume.refresh' () {
-        var res = Meteor.wrapAsync(docker.listVolumes, docker)()
+        var res = Meteor.wrapAsync(docker.listVolumes, docker)({
+            filters: {
+                label: ['user_id=' + this.userId]
+            }
+        })
 
         res = res
             .Volumes
-            .filter(e => e.Labels && e.Labels.user_id == this.userId)
+            // .filter(e => e.Labels && e.Labels.user_id == this.userId)
 
         res.forEach(e => {
             Volume.upsert({
@@ -24,7 +28,7 @@ Meteor.methods({
             .find()
             .fetch()
             .filter(e => e.user_id == this.userId && !res.find(r => r.Name == e.Name))
-            .forEach(e => Volume.remove({Name: e.Name}))
+            .forEach(e => Volume.remove({ Name: e.Name }))
     },
     'volume.create' (e) {
         try {
