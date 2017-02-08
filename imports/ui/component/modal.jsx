@@ -4,7 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Field from './field'
 
-class Modal extends Component {
+export default class Modal extends Component {
     constructor() {
         super()
         this.state = {};
@@ -16,59 +16,7 @@ class Modal extends Component {
         this.state = {};
     }
     render() {
-        const actions = [ < FlatButton label = "取消" primary = {
-                true
-            }
-            onTouchTap = {
-                () => this.closeDialog()
-            } />, < FlatButton label = "确定" primary = {
-                true
-            }
-            keyboardFocused = {
-                true
-            }
-            onTouchTap = {
-                () => this.closeDialog(this.state)
-            } />
-        ]
-
-        const content = (this.props.action == 'remove'
-            ? <div style={{
-                    textAlign: 'center'
-                }}>确认要删除吗？</div>
-            : <div>
-                {this
-                    .props
-                    .fields[this.props.code]
-                    .map(e => {
-                        return <Field
-                            {...e}
-                            value={(() => this.props.e[e.code])()}
-                            changeValue={(v) => this.setState({
-                            [e.code]: v
-                        })}
-                            key={e.code}/>
-                    })
-}
-            </div>)
-
-        return (
-            <Dialog
-                title={this.props.title}
-                modal={true}
-                actions={actions}
-                open={this.props.open}
-                autoScrollBodyContent={this.props.action != 'remove'}
-                onRequestClose={() => this.closeDialog()}>
-                {content}
-            </Dialog>
-        )
-    }
-}
-
-export default createContainer(({params}) => {
-    return {
-        fields: {
+        const fields = {
             network: [
                 {
                     name: 'NAME',
@@ -95,12 +43,12 @@ export default createContainer(({params}) => {
                     name: 'IMAGE',
                     code: 'IMAGE',
                     type: 'select',
-                    options: []
+                    options: this.props.images
                 }, {
                     name: 'NETWORK',
                     code: 'NETWORK',
                     type: 'select',
-                    options: []
+                    options: this.props.networks
                 }, {
                     name: 'NETWORK PORT',
                     code: 'NETWORK_PORT',
@@ -109,7 +57,7 @@ export default createContainer(({params}) => {
                     name: 'VOLUME',
                     code: 'VOLUME',
                     type: 'select',
-                    options: []
+                    options: this.props.volumes
                 }, {
                     name: 'VOLUME PATH',
                     code: 'VOLUME_PATH',
@@ -117,5 +65,50 @@ export default createContainer(({params}) => {
                 }
             ]
         }
+
+        const actions = [ < FlatButton label = "取消" primary = {
+                true
+            }
+            onTouchTap = {
+                () => this.closeDialog()
+            } />, < FlatButton label = "确定" primary = {
+                true
+            }
+            keyboardFocused = {
+                true
+            }
+            onTouchTap = {
+                () => this.closeDialog(this.state)
+            } />
+        ]
+
+        const content = (this.props.action == 'remove'
+            ? <div style={{
+                    textAlign: 'center'
+                }}>确认要删除吗？</div>
+            : <div>
+                {fields[this.props.code].map(e => {
+                    return <Field
+                        {...e}
+                        value={(() => this.props.e[e.code])()}
+                        changeValue={(v) => this.setState({
+                        [e.code]: v
+                    })}
+                        key={e.code}/>
+                })
+}
+            </div>)
+
+        return (
+            <Dialog
+                title={this.props.title}
+                modal={true}
+                actions={actions}
+                open={this.props.open}
+                autoScrollBodyContent={this.props.action != 'remove'}
+                onRequestClose={() => this.closeDialog()}>
+                {content}
+            </Dialog>
+        )
     }
-}, Modal)
+}

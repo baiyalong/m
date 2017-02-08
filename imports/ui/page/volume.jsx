@@ -54,13 +54,13 @@ class Volume extends Component {
                 <Table height={this.state.height + 'px'} multiSelectable={true}>
                     <TableHeader>
                         <TableRow>
-                            <TableHeaderColumn>NAME</TableHeaderColumn>
+                            <TableHeaderColumn>VOLUME NAME</TableHeaderColumn>
                             <TableHeaderColumn>MOUNTPOINT</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody showRowHover={true} deselectOnClickaway={false}>
                         {
-                            this.props.networks.map(e => {
+                            this.props.volumes.map(e => {
                                 return <TableRow  key={e.NAME} ref={e.NAME}>
                                     <TableRowColumn >{e.NAME}</TableRowColumn>
                                     <TableRowColumn >{e.MOUNTPOINT}</TableRowColumn>
@@ -72,7 +72,7 @@ class Volume extends Component {
                         <TableRow>
                             <TableRowColumn>
                                 <div style={{ position: 'relative', left: 0, top: '-15px' }}>
-                                    TOTAL: {this.props.networks.length||0}
+                                    TOTAL: {this.props.volumes.length||0}
                                 </div>
                             </TableRowColumn>
                             <TableRowColumn>
@@ -118,7 +118,7 @@ export default createContainer(({ params }) => {
                 callback=>Meteor.call('volume.refresh',callback)
             ],callback)
         },
-        networks: VolumeData.find().fetch().sort((a,b)=>a.Created-b.Created).map(e=>{
+        volumes: VolumeData.find().fetch().sort((a,b)=>a.Created-b.Created).map(e=>{
             return {
                 NAME:e.Name,
                 MOUNTPOINT:e.Mountpoint,

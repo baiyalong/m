@@ -54,7 +54,7 @@ class Network extends Component {
                 <Table height={this.state.height + 'px'} multiSelectable={true}>
                     <TableHeader>
                         <TableRow>
-                            <TableHeaderColumn>Network ID</TableHeaderColumn>
+                            <TableHeaderColumn>NETWORK ID</TableHeaderColumn>
                             <TableHeaderColumn>NAME</TableHeaderColumn>
                             <TableHeaderColumn>SUBNET</TableHeaderColumn>
                             <TableHeaderColumn>GATEWAY</TableHeaderColumn>

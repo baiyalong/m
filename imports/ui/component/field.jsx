@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 
-class Field extends Component {
+export default class Field extends Component {
     constructor(props) {
         super()
         this.state = {
@@ -32,7 +32,7 @@ class Field extends Component {
                 f = <SelectField
                     floatingLabelText={this.props.name}
                     value={this.state.value || ''}
-                    onChange={(event, value) => {
+                    onChange={(event,index,value) => {
                     this.setState({value});
                     this
                         .props
@@ -53,20 +53,3 @@ class Field extends Component {
         return f
     }
 }
-
-export default createContainer(({params}) => {
-    return {
-        options: [
-            {
-                name: '1',
-                value: '1'
-            }, {
-                name: '2',
-                value: '2'
-            }, {
-                name: '3',
-                value: '4'
-            }
-        ]
-    }
-}, Field)

@@ -4,6 +4,7 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import moment from 'moment'
 import IconButton from 'material-ui/IconButton/IconButton';
 import Insert from 'material-ui/svg-icons/content/add';
+import Start from 'material-ui/svg-icons/av/play-arrow';
 import Remove from 'material-ui/svg-icons/content/remove';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Modal from '../component/modal'
@@ -88,6 +89,9 @@ class Process extends Component {
                                 <IconButton style={{float:'right'}} tooltip='删除' tooltipPosition="top-center" onClick={() => this.openDialog({ action: 'remove' })} >
                                     <Remove />
                                 </IconButton>
+                                <IconButton style={{float:'right'}} tooltip='启动' tooltipPosition="top-center" onClick={() => {}} >
+                                    <Start />
+                                </IconButton>
                                 <IconButton style={{float:'right'}} tooltip='添加' tooltipPosition="top-center" onClick={() => this.openDialog({ action: 'create' })} >
                                     <Insert />
                                 </IconButton>
@@ -96,7 +100,11 @@ class Process extends Component {
                     </TableFooter>
                 </Table>
 
-                <Modal {...this.state} closeDialog={(e) => this.closeDialog(e)}/>
+                <Modal {...this.state}
+                    images={this.props.images}
+                    networks={this.props.networks}
+                    volumes={this.props.volumes}
+                    closeDialog={(e) => this.closeDialog(e)}/>
             </div>
         )
     }
@@ -105,9 +113,15 @@ class Process extends Component {
 
 import async from 'async'
 import ProcessData from '../../api/process/schema'
+import ImageData from '../../api/image/schema'
+import NetworkData from '../../api/network/schema'
+import VolumeData from '../../api/volume/schema'
 
 export default createContainer(({ params }) => {
     Meteor.subscribe('processes')
+    Meteor.subscribe('images')
+    Meteor.subscribe('networks')
+    Meteor.subscribe('volumes')
     return {
         refresh:()=>{
             Meteor.call('process.refresh',callback)
@@ -131,6 +145,24 @@ export default createContainer(({ params }) => {
                 IMAGE:e.Image,
                 STATUS:e.Status,
                 CREATED:moment(new Date(e.Created*1000)).format('YYYY-MM-DD')
+            }
+        }),
+        images: ImageData.find().fetch().sort((a,b)=>a.Created-b.Created<0).map(e=>{
+            return {
+                value:e.RepoTags[0],
+                name:JSON.stringify(e.RepoTags),
+            }
+        }),
+        networks: NetworkData.find().fetch().sort((a,b)=>a.Created-b.Created).map(e=>{
+            return {
+                value:e.Name,
+                name:e.Name,
+            }
+        }),
+        volumes: VolumeData.find().fetch().sort((a,b)=>a.Created-b.Created).map(e=>{
+            return {
+                value:e.Name,
+                name:e.Name,
             }
         }),
     }

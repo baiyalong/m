@@ -11,7 +11,6 @@ Meteor.methods({
                 label: ['user_id=' + this.userId]
             }
         })
-
         res.forEach(e => {
             Process.upsert({
                 Id: e.Id
@@ -32,16 +31,34 @@ Meteor.methods({
             .find()
             .fetch()
             .filter(e => e.user_id == this.userId && !res.find(r => r.Id == e.Id))
-            .forEach(e => Process.remove({ Id: e.Id }))
+            .forEach(e => Process.remove({
+                Id: e.Id
+            }))
     },
     'process.create' (e) {
+        var host_port = e.NETWORK_PORT && e.NETWORK_PORT.split(':')[0] + ''
+        var container_port = e.NETWORK_PORT && e.NETWORK_PORT.split(':')[1] + '/tcp'
+        var volume_path = e.VOLUME_PATH
+
         try {
             Meteor.wrapAsync(docker.createContainer, docker)({
                 name: e.NAME,
                 Image: e.IMAGE,
-                // NetworkingConfig: {},
-                // ExposedPorts: {},
-                // Volumes: {},
+                ExposedPort: {
+                    [container_port]: {}
+                },
+                Volumes: {
+                    [volume_path]: {}
+                },
+                HostConfig: {
+                    Binds: [e.VOLUME + ':' + e.VOLUME_PATH],
+                    NetworkMode: e.NETWORK,
+                    PortBindings: {
+                        [container_port]: [{
+                            HostPort: host_port
+                        }]
+                    },
+                },
                 Labels: {
                     user_id: this.userId
                 }
