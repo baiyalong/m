@@ -11,8 +11,11 @@ import {
 } from 'material-ui/Table'
 import moment from 'moment'
 import IconButton from 'material-ui/IconButton/IconButton';
-import Insert from 'material-ui/svg-icons/content/add';
 import Start from 'material-ui/svg-icons/av/play-arrow';
+import Pause from 'material-ui/svg-icons/av/pause';
+import Stop from 'material-ui/svg-icons/av/stop';
+import Restart from 'material-ui/svg-icons/av/replay';
+import Insert from 'material-ui/svg-icons/content/add';
 import Remove from 'material-ui/svg-icons/content/remove';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Modal from '../component/modal'
@@ -146,19 +149,46 @@ class Process extends Component {
                                     style={{
                                     float: 'right'
                                 }}
-                                    tooltip='启动'
+                                    tooltip='添加'
                                     tooltipPosition="top-center"
-                                    onClick={() => {}}>
-                                    <Start/>
+                                    onClick={() => this.openDialog({action: 'create'})}>
+                                    <Insert/>
                                 </IconButton>
                                 <IconButton
                                     style={{
                                     float: 'right'
                                 }}
-                                    tooltip='添加'
+                                    tooltip='重启'
                                     tooltipPosition="top-center"
-                                    onClick={() => this.openDialog({action: 'create'})}>
-                                    <Insert/>
+                                    onClick={() => {}}>
+                                    <Restart/>
+                                </IconButton>
+                                <IconButton
+                                    style={{
+                                    float: 'right'
+                                }}
+                                    tooltip='停止'
+                                    tooltipPosition="top-center"
+                                    onClick={() => {}}>
+                                    <Stop/>
+                                </IconButton>
+                                <IconButton
+                                    style={{
+                                    float: 'right'
+                                }}
+                                    tooltip='暂停'
+                                    tooltipPosition="top-center"
+                                    onClick={() => {}}>
+                                    <Pause/>
+                                </IconButton>
+                                <IconButton
+                                    style={{
+                                    float: 'right'
+                                }}
+                                    tooltip='启动'
+                                    tooltipPosition="top-center"
+                                    onClick={() => {}}>
+                                    <Start/>
                                 </IconButton>
                             </TableRowColumn>
                         </TableRow>
