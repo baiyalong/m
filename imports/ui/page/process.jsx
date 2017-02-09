@@ -11,6 +11,7 @@ import {
 } from 'material-ui/Table'
 import moment from 'moment'
 import IconButton from 'material-ui/IconButton/IconButton';
+import Console from 'material-ui/svg-icons/av/featured-play-list';
 import Start from 'material-ui/svg-icons/av/play-arrow';
 import Pause from 'material-ui/svg-icons/av/pause';
 import Stop from 'material-ui/svg-icons/av/stop';
@@ -153,6 +154,15 @@ class Process extends Component {
                                     tooltipPosition="top-center"
                                     onClick={() => this.openDialog({action: 'create'})}>
                                     <Insert/>
+                                </IconButton>
+                                <IconButton
+                                    style={{
+                                    float: 'right'
+                                }}
+                                    tooltip='Console'
+                                    tooltipPosition="top-center"
+                                    onClick={() => {}}>
+                                    <Console/>
                                 </IconButton>
                                 <IconButton
                                     style={{
