@@ -90,5 +90,66 @@ Meteor.methods({
         } catch (e) {
             throw new Meteor.Error(e.json.message)
         }
-    }
+    },
+    'process.start' (a) {
+        try {
+            a.forEach(id => {
+                var process = docker.getContainer(id)
+                Meteor.wrapAsync(process.start, process)()
+            })
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
+    },
+    'process.pause' (a) {
+        try {
+            a.forEach(id => {
+                var process = docker.getContainer(id)
+                Meteor.wrapAsync(process.pause, process)()
+            })
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
+    },
+    'process.resume' (a) {
+        try {
+            a.forEach(id => {
+                var process = docker.getContainer(id)
+                Meteor.wrapAsync(process.resume, process)()
+            })
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
+    },
+    'process.stop' (a) {
+        try {
+            a.forEach(id => {
+                var process = docker.getContainer(id)
+                Meteor.wrapAsync(process.stop, process)()
+            })
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
+    },
+    'process.restart' (a) {
+        try {
+            a.forEach(id => {
+                var process = docker.getContainer(id)
+                Meteor.wrapAsync(process.restart, process)()
+            })
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
+    },
+    'process.kill' (a) {
+        try {
+            a.forEach(id => {
+                var process = docker.getContainer(id)
+                Meteor.wrapAsync(process.kill, process)()
+            })
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
+    },
+    'process.console' (id) {}
 })

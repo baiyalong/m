@@ -15,6 +15,7 @@ import Console from 'material-ui/svg-icons/av/featured-play-list';
 import Start from 'material-ui/svg-icons/av/play-arrow';
 import Pause from 'material-ui/svg-icons/av/pause';
 import Stop from 'material-ui/svg-icons/av/stop';
+import Kill from 'material-ui/svg-icons/content/clear';
 import Restart from 'material-ui/svg-icons/av/replay';
 import Insert from 'material-ui/svg-icons/content/add';
 import Remove from 'material-ui/svg-icons/content/remove';
@@ -73,13 +74,21 @@ class Process extends Component {
             .create(e)
     }
     remove() {
+        this
+            .props
+            .remove(this.get_selected())
+    }
+    get_selected() {
         var o = this.refs
         var a = Object
             .keys(o)
             .filter(e => o[e].props.selected)
+        return a
+    }
+    action(c) {
         this
             .props
-            .remove(a)
+            .action(this.get_selected(), c)
     }
     render() {
         return (
@@ -90,11 +99,8 @@ class Process extends Component {
                             <TableHeaderColumn>NAME</TableHeaderColumn>
                             <TableHeaderColumn>IMAGE</TableHeaderColumn>
                             <TableHeaderColumn>NETWORK</TableHeaderColumn>
-                            <TableHeaderColumn>PORT</TableHeaderColumn>
                             <TableHeaderColumn>VOLUME</TableHeaderColumn>
-                            <TableHeaderColumn>PATH</TableHeaderColumn>
                             <TableHeaderColumn>STATUS</TableHeaderColumn>
-                            <TableHeaderColumn>CREATED</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody showRowHover={true} deselectOnClickaway={false}>
@@ -105,12 +111,9 @@ class Process extends Component {
                                 return <TableRow key={e.CONTAINER_ID} ref={e.CONTAINER_ID}>
                                     <TableRowColumn >{e.NAME}</TableRowColumn>
                                     <TableRowColumn >{e.IMAGE}</TableRowColumn>
-                                    <TableRowColumn >{e.NETWORK}</TableRowColumn>
-                                    <TableRowColumn >{e.NETWORK_PORT}</TableRowColumn>
-                                    <TableRowColumn >{e.VOLUME}</TableRowColumn>
-                                    <TableRowColumn >{e.VOLUME_PATH}</TableRowColumn>
+                                    <TableRowColumn >{e.NETWORK + e.NETWORK_PORT}</TableRowColumn>
+                                    <TableRowColumn >{e.VOLUME + e.VOLUME_PATH}</TableRowColumn>
                                     <TableRowColumn >{e.STATUS}</TableRowColumn>
-                                    <TableRowColumn >{e.CREATED}</TableRowColumn>
                                 </TableRow>
                             })
 }
@@ -161,8 +164,21 @@ class Process extends Component {
                                 }}
                                     tooltip='Console'
                                     tooltipPosition="top-center"
-                                    onClick={() => {}}>
+                                    onClick={() => {
+                                    this.action('console')
+                                }}>
                                     <Console/>
+                                </IconButton>
+                                <IconButton
+                                    style={{
+                                    float: 'right'
+                                }}
+                                    tooltip='Kill'
+                                    tooltipPosition="top-center"
+                                    onClick={() => {
+                                    this.action('kill')
+                                }}>
+                                    <Kill/>
                                 </IconButton>
                                 <IconButton
                                     style={{
@@ -170,7 +186,9 @@ class Process extends Component {
                                 }}
                                     tooltip='重启'
                                     tooltipPosition="top-center"
-                                    onClick={() => {}}>
+                                    onClick={() => {
+                                    this.action('restart')
+                                }}>
                                     <Restart/>
                                 </IconButton>
                                 <IconButton
@@ -179,7 +197,9 @@ class Process extends Component {
                                 }}
                                     tooltip='停止'
                                     tooltipPosition="top-center"
-                                    onClick={() => {}}>
+                                    onClick={() => {
+                                    this.action('stop')
+                                }}>
                                     <Stop/>
                                 </IconButton>
                                 <IconButton
@@ -188,7 +208,9 @@ class Process extends Component {
                                 }}
                                     tooltip='暂停'
                                     tooltipPosition="top-center"
-                                    onClick={() => {}}>
+                                    onClick={() => {
+                                    this.action('pause')
+                                }}>
                                     <Pause/>
                                 </IconButton>
                                 <IconButton
@@ -197,7 +219,9 @@ class Process extends Component {
                                 }}
                                     tooltip='启动'
                                     tooltipPosition="top-center"
-                                    onClick={() => {}}>
+                                    onClick={() => {
+                                    this.action('start')
+                                }}>
                                     <Start/>
                                 </IconButton>
                             </TableRowColumn>
@@ -240,6 +264,12 @@ export default createContainer(({params}) => {
         remove: (a) => {
             async.series([
                 callback => Meteor.call('process.remove', a, callback),
+                callback => Meteor.call('process.refresh', callback)
+            ], callback)
+        },
+        action: (a, c) => {
+            async.series([
+                callback => Meteor.call('process.' + c, a, callback),
                 callback => Meteor.call('process.refresh', callback)
             ], callback)
         },
