@@ -18,10 +18,10 @@ Meteor.methods({
                 Id: e.Id,
                 Name: e.Names,
                 Image: e.Image,
-                Network: null,
-                Network_port: null,
-                Volume: null,
-                Volume_path: null,
+                Network: e.HostConfig.NetworkMode,
+                Network_port: e.Ports,
+                Volume: e.Mounts[0] && e.Mounts[0].Name,
+                Volume_path: e.Mounts[0] && e.Mounts[0].Destination,
                 Status: e.Status,
                 Created: e.Created,
                 user_id: e.Labels.user_id
@@ -31,38 +31,52 @@ Meteor.methods({
             .find()
             .fetch()
             .filter(e => e.user_id == this.userId && !res.find(r => r.Id == e.Id))
-            .forEach(e => Process.remove({
-                Id: e.Id
-            }))
+            .forEach(e => Process.remove({Id: e.Id}))
     },
     'process.create' (e) {
-        var host_port = e.NETWORK_PORT && e.NETWORK_PORT.split(':')[0] + ''
-        var container_port = e.NETWORK_PORT && e.NETWORK_PORT.split(':')[1] + '/tcp'
+        var host_port = e.NETWORK_PORT && e
+            .NETWORK_PORT
+            .split(':')[0] + ''
+        var container_port = e.NETWORK_PORT && e
+            .NETWORK_PORT
+            .split(':')[1] + '/tcp'
         var volume_path = e.VOLUME_PATH
 
+        var d = {
+            HostConfig: {},
+            Labels: {
+                user_id: this.userId
+            }
+        }
+
+        if (e.NAME) 
+            d.name = e.NAME
+        if (e.IMAGE) 
+            d.Image = e.IMAGE
+        if (e.NETWORK) 
+            d.HostConfig.NetworkMode = e.NETWORK
+        if (e.NETWORK_PORT) {
+            d.ExposedPort = {
+                [container_port]: {}
+            }
+            d.HostConfig.PortBindings = {
+                [container_port]: [
+                    {
+                        HostPort: host_port
+                    }
+                ]
+            }
+        }
+
+        if (e.VOLUME && e.VOLUME_PATH) {
+            d.Volumes = {
+                [volume_path]: {}
+            }
+            d.HostConfig.Binds = [e.VOLUME + ':' + e.VOLUME_PATH]
+        }
+
         try {
-            Meteor.wrapAsync(docker.createContainer, docker)({
-                name: e.NAME,
-                Image: e.IMAGE,
-                ExposedPort: {
-                    [container_port]: {}
-                },
-                Volumes: {
-                    [volume_path]: {}
-                },
-                HostConfig: {
-                    Binds: [e.VOLUME + ':' + e.VOLUME_PATH],
-                    NetworkMode: e.NETWORK,
-                    PortBindings: {
-                        [container_port]: [{
-                            HostPort: host_port
-                        }]
-                    },
-                },
-                Labels: {
-                    user_id: this.userId
-                }
-            })
+            Meteor.wrapAsync(docker.createContainer, docker)(d)
         } catch (e) {
             throw new Meteor.Error(e.json.message)
         }

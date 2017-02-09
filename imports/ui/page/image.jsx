@@ -34,7 +34,6 @@ class Image extends Component {
                 <Table height={this.state.height + 'px'}>
                     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                         <TableRow>
-                            <TableHeaderColumn width='15%'>IMAGE ID</TableHeaderColumn>
                             <TableHeaderColumn>REPO TAGS</TableHeaderColumn>
                             <TableHeaderColumn width='10%'>SIZE</TableHeaderColumn>
                             <TableHeaderColumn width='10%'>CREATED</TableHeaderColumn>
@@ -44,7 +43,6 @@ class Image extends Component {
                         {
                             this.props.images.map(e => {
                                 return <TableRow key={e.IMAGE_ID} style={lineHeight}>
-                                    <TableRowColumn style={lineHeight} width='15%'>{e.IMAGE_ID}</TableRowColumn>
                                     <TableRowColumn style={lineHeight}>{e.REPO_TAGS}</TableRowColumn>
                                     <TableRowColumn style={lineHeight} width='10%'>{e.SIZE}</TableRowColumn>
                                     <TableRowColumn style={lineHeight} width='10%'>{e.CREATED}</TableRowColumn>

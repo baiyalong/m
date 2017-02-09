@@ -54,7 +54,6 @@ class Network extends Component {
                 <Table height={this.state.height + 'px'} multiSelectable={true}>
                     <TableHeader>
                         <TableRow>
-                            <TableHeaderColumn>NETWORK ID</TableHeaderColumn>
                             <TableHeaderColumn>NAME</TableHeaderColumn>
                             <TableHeaderColumn>SUBNET</TableHeaderColumn>
                             <TableHeaderColumn>GATEWAY</TableHeaderColumn>
@@ -65,7 +64,6 @@ class Network extends Component {
                         {
                             this.props.networks.map(e => {
                                 return <TableRow  key={e.Network_ID} ref={e.Network_ID}>
-                                    <TableRowColumn >{e.Network_ID}</TableRowColumn>
                                     <TableRowColumn >{e.NAME}</TableRowColumn>
                                     <TableRowColumn >{e.IPAM_SUBNET}</TableRowColumn>
                                     <TableRowColumn >{e.IPAM_GATEWAY}</TableRowColumn>
