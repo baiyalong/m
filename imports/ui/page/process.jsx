@@ -11,7 +11,7 @@ import {
 } from 'material-ui/Table'
 import moment from 'moment'
 import IconButton from 'material-ui/IconButton/IconButton';
-import Console from 'material-ui/svg-icons/av/featured-play-list';
+import ConsoleIcon from 'material-ui/svg-icons/av/featured-play-list';
 import Start from 'material-ui/svg-icons/av/play-arrow';
 import Pause from 'material-ui/svg-icons/av/pause';
 import Stop from 'material-ui/svg-icons/av/stop';
@@ -21,6 +21,7 @@ import Insert from 'material-ui/svg-icons/content/add';
 import Remove from 'material-ui/svg-icons/content/remove';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Modal from '../component/modal'
+import Console from '../component/console'
 
 const ellipsis = {
     textOverflow: 'ellipsis',
@@ -41,7 +42,8 @@ class Process extends Component {
             e: {},
             height: getTableHeight(),
             title: '计算资源',
-            code: 'process'
+            code: 'process',
+            console: false
         }
         window.onresize = this
             .resize
@@ -66,7 +68,17 @@ class Process extends Component {
     closeDialog(e) {
         if (e) 
             this[this.state.action](e);
-        this.setState({open: false, action: null, e: {}})
+        this.setState(Object.assign(state, {
+            open: false,
+            action: null,
+            e: {}
+        }))
+    }
+    openConsole() {
+        this.setState({console: true})
+    }
+    closeConsole() {
+        this.setState({console: false})
     }
     create(e) {
         this
@@ -165,9 +177,9 @@ class Process extends Component {
                                     tooltip='Console'
                                     tooltipPosition="top-center"
                                     onClick={() => {
-                                    this.action('console')
+                                    this.openConsole()
                                 }}>
-                                    <Console/>
+                                    <ConsoleIcon/>
                                 </IconButton>
                                 <IconButton
                                     style={{
@@ -235,6 +247,8 @@ class Process extends Component {
                     networks={this.props.networks}
                     volumes={this.props.volumes}
                     closeDialog={(e) => this.closeDialog(e)}/>
+
+                <Console open={this.state.console} closeDialog={e => this.closeConsole(e)}/>
             </div>
         )
     }

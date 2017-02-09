@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import {createContainer} from 'meteor/react-meteor-data'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Field from './field'

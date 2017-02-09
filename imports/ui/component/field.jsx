@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import {createContainer} from 'meteor/react-meteor-data'
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
