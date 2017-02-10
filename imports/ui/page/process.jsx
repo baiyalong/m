@@ -44,7 +44,8 @@ class Process extends Component {
             height: getTableHeight(),
             title: '计算资源',
             code: 'process',
-            console: false
+            console: false,
+            console_title: null
         }
         window.onresize = this
             .resize
@@ -77,10 +78,19 @@ class Process extends Component {
         this.setState({open: false, action: null, e: {}})
     }
     openConsole() {
-        this.setState({console: true})
+        var a = this.get_selected()
+        if (a.length) 
+            this.setState({
+                console: true,
+                console_title: this
+                    .props
+                    .processes
+                    .find(e => e.CONTAINER_ID == a[0])
+                    .NAME[0]
+            })
     }
     closeConsole() {
-        this.setState({console: false})
+        this.setState({console: false, console_title: null})
     }
     create(e) {
         this
@@ -100,9 +110,9 @@ class Process extends Component {
         return a
     }
     action(c) {
-        this
-            .props
-            .action(this.get_selected(), c)
+        var a = this.get_selected()
+        if (a.length) 
+            this.props.action(a, c)
     }
     render() {
         return (
@@ -261,7 +271,10 @@ class Process extends Component {
                     volumes={this.props.volumes}
                     closeDialog={(e) => this.closeDialog(e)}/>
 
-                <Console open={this.state.console} closeDialog={e => this.closeConsole(e)}/>
+                <Console
+                    open={this.state.console}
+                    title={this.state.console_title}
+                    closeDialog={e => this.closeConsole(e)}/>
             </div>
         )
     }

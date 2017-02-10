@@ -154,5 +154,7 @@ Meteor.methods({
             throw new Meteor.Error(e.json.message)
         }
     },
-    'process.console' (id) {}
+    'process.console' (id) {
+        //docker exec -it
+    }
 })

@@ -20,18 +20,42 @@ export default class Console extends React.Component {
     handleClose() {
         this
             .props
-            .closeDialog(state)
+            .closeDialog(this.state)
         this.state = {};
     };
 
     render() {
+        const actions = [ < FlatButton label = "Cancel" primary = {
+                true
+            }
+            onTouchTap = {
+                () => this.handleClose()
+            } />, < FlatButton label = "Submit" primary = {
+                true
+            }
+            keyboardFocused = {
+                true
+            }
+            onTouchTap = {
+                () => this.handleClose()
+            } />
+        ];
+
+        const content = (
+            <div>
+                <textarea></textarea>
+            </div>
+        )
+
         return (
             <Dialog
-                title="Dialog With Custom Width"
+                title={this.props.title}
+                actions={actions}
+                autoScrollBodyContent={true}
                 modal={true}
                 contentStyle={customContentStyle}
                 open={this.props.open}>
-                This dialog spans the entire width of the screen.
+                {content}
             </Dialog>
         );
     }
