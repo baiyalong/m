@@ -9,6 +9,15 @@ const customContentStyle = {
     maxWidth: 'none'
 }
 
+const terminal = {
+    width: 800,
+    height: 450,
+    margin: '0 auto',
+    padding: 2,
+    backgroundColor: '#111',
+    color: '#fafafa'
+}
+
 /**
  * The dialog width has been set to occupy the full width of browser through the `contentStyle` property.
  */
@@ -18,12 +27,9 @@ export default class Console extends React.Component {
         this.state = {};
     }
     connect() {
-        var term = new Terminal({
-            cursorBlink: true, // Do not blink the terminal's cursor
-            cols: 120, // Set the terminal's width to 120 columns
-            rows: 80 // Set the terminal's height to 80 rows
-        });
+        var term = new Terminal();
         term.open(document.getElementById('terminal'));
+        term.fit()
         term.write('Hello wrold ! ')
     }
     disconnect() {}
@@ -64,7 +70,7 @@ export default class Console extends React.Component {
                 modal={true}
                 contentStyle={customContentStyle}
                 open={this.props.open}>
-                <div id='terminal'></div>
+                <div id='terminal' style={terminal}></div>
             </Dialog>
         );
     }
