@@ -43,6 +43,9 @@ Meteor.methods({
         var volume_path = e.VOLUME_PATH
 
         var d = {
+            AttachStdin: true,
+            Tty: true,
+            Cmd: '/bin/sh',
             HostConfig: {},
             Labels: {
                 user_id: this.userId
@@ -111,11 +114,11 @@ Meteor.methods({
             throw new Meteor.Error(e.json.message)
         }
     },
-    'process.resume' (a) {
+    'process.unpause' (a) {
         try {
             a.forEach(id => {
                 var process = docker.getContainer(id)
-                Meteor.wrapAsync(process.resume, process)()
+                Meteor.wrapAsync(process.unpause, process)()
             })
         } catch (e) {
             throw new Meteor.Error(e.json.message)

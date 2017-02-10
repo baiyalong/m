@@ -13,7 +13,8 @@ import moment from 'moment'
 import IconButton from 'material-ui/IconButton/IconButton';
 import ConsoleIcon from 'material-ui/svg-icons/av/featured-play-list';
 import Start from 'material-ui/svg-icons/av/play-arrow';
-import Pause from 'material-ui/svg-icons/av/pause';
+import Pause from 'material-ui/svg-icons/av/pause-circle-outline';
+import Unpause from 'material-ui/svg-icons/av/play-circle-outline';
 import Stop from 'material-ui/svg-icons/av/stop';
 import Kill from 'material-ui/svg-icons/content/clear';
 import Restart from 'material-ui/svg-icons/av/replay';
@@ -73,11 +74,7 @@ class Process extends Component {
     closeDialog(e) {
         if (e) 
             this[this.state.action](e);
-        this.setState(Object.assign(state, {
-            open: false,
-            action: null,
-            e: {}
-        }))
+        this.setState({open: false, action: null, e: {}})
     }
     openConsole() {
         this.setState({console: true})
@@ -190,12 +187,23 @@ class Process extends Component {
                                     style={{
                                     float: 'right'
                                 }}
-                                    tooltip='Kill'
+                                    tooltip='恢复'
                                     tooltipPosition="top-center"
                                     onClick={() => {
-                                    this.action('kill')
+                                    this.action('unpause')
                                 }}>
-                                    <Kill/>
+                                    <Unpause/>
+                                </IconButton>
+                                <IconButton
+                                    style={{
+                                    float: 'right'
+                                }}
+                                    tooltip='暂停'
+                                    tooltipPosition="top-center"
+                                    onClick={() => {
+                                    this.action('pause')
+                                }}>
+                                    <Pause/>
                                 </IconButton>
                                 <IconButton
                                     style={{
@@ -212,23 +220,23 @@ class Process extends Component {
                                     style={{
                                     float: 'right'
                                 }}
+                                    tooltip='强制关闭'
+                                    tooltipPosition="top-center"
+                                    onClick={() => {
+                                    this.action('kill')
+                                }}>
+                                    <Kill/>
+                                </IconButton>
+                                <IconButton
+                                    style={{
+                                    float: 'right'
+                                }}
                                     tooltip='停止'
                                     tooltipPosition="top-center"
                                     onClick={() => {
                                     this.action('stop')
                                 }}>
                                     <Stop/>
-                                </IconButton>
-                                <IconButton
-                                    style={{
-                                    float: 'right'
-                                }}
-                                    tooltip='暂停'
-                                    tooltipPosition="top-center"
-                                    onClick={() => {
-                                    this.action('pause')
-                                }}>
-                                    <Pause/>
                                 </IconButton>
                                 <IconButton
                                     style={{
