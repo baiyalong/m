@@ -49,6 +49,11 @@ class Process extends Component {
             .resize
             .bind(this)
     }
+    componentWillMount() {
+        this
+            .props
+            .refresh()
+    }
     resize() {
         this.setState({height: getTableHeight()})
     }
