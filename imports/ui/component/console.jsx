@@ -65,7 +65,7 @@ class Console extends React.Component {
     }
     disconnect() {
         var term = this.state.terminal
-        term.destroy()
+        term && term.destroy()
         this.setState({terminal: null})
     }
     handleClose() {
