@@ -45,6 +45,7 @@ class Process extends Component {
             title: '计算资源',
             code: 'process',
             console: false,
+            console_id: null,
             console_title: null
         }
         window.onresize = this
@@ -82,6 +83,7 @@ class Process extends Component {
         if (a.length) 
             this.setState({
                 console: true,
+                console_id: a[0],
                 console_title: this
                     .props
                     .processes
@@ -90,7 +92,7 @@ class Process extends Component {
             })
     }
     closeConsole() {
-        this.setState({console: false, console_title: null})
+        this.setState({console: false, console_id: null, console_title: null})
     }
     create(e) {
         this
@@ -273,6 +275,7 @@ class Process extends Component {
 
                 <Console
                     open={this.state.console}
+                    id={this.state.console_id}
                     title={this.state.console_title}
                     closeDialog={e => this.closeConsole(e)}/>
             </div>

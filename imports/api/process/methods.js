@@ -154,7 +154,22 @@ Meteor.methods({
             throw new Meteor.Error(e.json.message)
         }
     },
-    'process.console' (id) {
-        //docker exec -it
+    'process.console_open' (id) {
+        var res
+        try {
+            var process = docker.getContainer(id)
+            res = Meteor.wrapAsync(process.exec, process)({AttachStdin: true, AttachStdout: true, AttachStderr: true, Tty: true, Cmd: ['/bin/sh']})
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
+        return res
+    },
+    'process.console_resize' (id, size) {
+        try {
+            var exec = docker.getExec(id)
+            res = Meteor.wrapAsync(exec.resize, exec)(size)
+        } catch (e) {
+            throw new Meteor.Error(e.json.message)
+        }
     }
 })

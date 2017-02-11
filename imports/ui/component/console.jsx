@@ -1,4 +1,5 @@
 import React from 'react';
+import {createContainer} from 'meteor/react-meteor-data'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -21,19 +22,54 @@ const terminal = {
 /**
  * The dialog width has been set to occupy the full width of browser through the `contentStyle` property.
  */
-export default class Console extends React.Component {
+class Console extends React.Component {
     constructor() {
         super()
-        this.state = {};
+        this.state = {
+            terminal: null
+        };
+    }
+    componentWillMount() {
+        console.log('componentWillMount')
+    }
+    componentDidMount() {
+        console.log('componentDidMount')
+    }
+    componentWillReceiveProps(newProps) {
+        console.log('componentWillReceiveProps', newProps)
+        if (newProps.open) 
+            this.props.console(newProps.id, {
+                h: 600,
+                w: 800
+            })
+    }
+    shouldComponentUpdate(newProps, newState) {
+        console.log('shouldComponentUpdate', newProps, newState);
+        return true
+    }
+    componentWillUpdate(nextProps, nextState) {
+        console.log('componentWillUpdate', nextProps, nextState)
+    }
+    componentDidUpdate(prevProps, prevState) {
+        console.log('componentDidUpdate', prevProps, prevState)
+    }
+    componentWillUnmount() {
+        console.log('componentWillUnmount')
     }
     connect() {
         var term = new Terminal();
-        term.open(document.getElementById('terminal'));
-        term.fit()
+        term.open(document.getElementById('terminal-container'));
+        // term.fit()
         term.write('Hello wrold ! ')
+        this.setState({terminal: term})
     }
-    disconnect() {}
+    disconnect() {
+        var term = this.state.terminal
+        term.destroy()
+        this.setState({terminal: null})
+    }
     handleClose() {
+        this.disconnect()
         this
             .props
             .closeDialog(this.state)
@@ -41,26 +77,15 @@ export default class Console extends React.Component {
     };
 
     render() {
-        const actions = [ < FlatButton label = "Connect" primary = {
+        const actions = [< FlatButton label = "Close" primary = {
                 true
             }
             keyboardFocused = {
                 true
             }
             onTouchTap = {
-                () => this.connect()
-            } />, < FlatButton label = "Disconnect" primary = {
-                true
-            }
-            onTouchTap = {
-                () => this.disconnect()
-            } />, < FlatButton label = "Close" primary = {
-                true
-            }
-            onTouchTap = {
                 () => this.handleClose()
-            } />
-        ];
+            } />];
 
         return (
             <Dialog
@@ -70,8 +95,22 @@ export default class Console extends React.Component {
                 modal={true}
                 contentStyle={customContentStyle}
                 open={this.props.open}>
-                <div id='terminal' style={terminal}></div>
+                <div id='terminal-container' style={terminal}></div>
             </Dialog>
         );
     }
 }
+
+var async = require('async')
+export default createContainer(({params}) => {
+    return {
+        console: (id, size) => {
+            async.waterfall([
+                callback => Meteor.call('process.console_open', id, callback),
+                (res, callback) => Meteor.call('process.console_resize', res.id, size, callback)
+            ], err => err
+                ? console.log(err)
+                : null)
+        }
+    }
+}, Console)
