@@ -12,7 +12,6 @@ import Image from '../../ui/page/image.jsx'
 import Network from '../../ui/page/network.jsx'
 import Volume from '../../ui/page/volume.jsx'
 import Process from '../../ui/page/process.jsx'
-import Terminal from '../../ui/page/terminal.jsx'
 
 const onLogin = (nextState, replace) => Meteor.userId()
     ? replace({pathname: '/home'})
@@ -50,7 +49,6 @@ export const renderRoutes = () => (
                 <Route path="/network" component={Network}/>
                 <Route path="/volume" component={Volume}/>
                 <Route path="/process" component={Process}/>
-                <Route path="/terminal" component={Terminal}/>
             </Route>
             <Route path="*" onEnter={notFound}/>
         </Route>

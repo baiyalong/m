@@ -22,7 +22,6 @@ import Insert from 'material-ui/svg-icons/content/add';
 import Remove from 'material-ui/svg-icons/content/remove';
 import Refresh from 'material-ui/svg-icons/navigation/refresh';
 import Modal from '../component/modal'
-import Console from '../component/console'
 
 const ellipsis = {
     textOverflow: 'ellipsis',
@@ -43,10 +42,7 @@ class Process extends Component {
             e: {},
             height: getTableHeight(),
             title: '计算资源',
-            code: 'process',
-            console: false,
-            console_id: null,
-            console_title: null
+            code: 'process'
         }
         window.onresize = this
             .resize
@@ -77,22 +73,6 @@ class Process extends Component {
         if (e) 
             this[this.state.action](e);
         this.setState({open: false, action: null, e: {}})
-    }
-    openConsole() {
-        var a = this.get_selected()
-        if (a.length) 
-            this.setState({
-                console: true,
-                console_id: a[0],
-                console_title: this
-                    .props
-                    .processes
-                    .find(e => e.CONTAINER_ID == a[0])
-                    .NAME[0]
-            })
-    }
-    closeConsole() {
-        this.setState({console: false, console_id: null, console_title: null})
     }
     create(e) {
         this
@@ -188,10 +168,12 @@ class Process extends Component {
                                     style={{
                                     float: 'right'
                                 }}
-                                    tooltip='Console'
+                                    tooltip='Terminal'
                                     tooltipPosition="top-center"
                                     onClick={() => {
-                                    this.openConsole()
+                                    this
+                                        .get_selected()
+                                        .forEach(e => window.open('/terminal/' + e,))
                                 }}>
                                     <ConsoleIcon/>
                                 </IconButton>
@@ -273,11 +255,6 @@ class Process extends Component {
                     volumes={this.props.volumes}
                     closeDialog={(e) => this.closeDialog(e)}/>
 
-                <Console
-                    open={this.state.console}
-                    id={this.state.console_id}
-                    title={this.state.console_title}
-                    closeDialog={e => this.closeConsole(e)}/>
             </div>
         )
     }
