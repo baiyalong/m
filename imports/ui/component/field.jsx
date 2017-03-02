@@ -18,6 +18,8 @@ export default class Field extends Component {
                     type='text'
                     floatingLabelText={this.props.name}
                     value={this.state.value || ''}
+                    hintText={this.props.hint}
+                    floatingLabelFixed={true}
                     onChange={(event, value) => {
                     this.setState({value});
                     this
@@ -31,7 +33,9 @@ export default class Field extends Component {
                 f = <SelectField
                     floatingLabelText={this.props.name}
                     value={this.state.value || ''}
-                    onChange={(event,index,value) => {
+                    hintText={this.props.hint}
+                    floatingLabelFixed={true}
+                    onChange={(event, index, value) => {
                     this.setState({value});
                     this
                         .props

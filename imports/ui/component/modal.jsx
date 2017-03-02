@@ -20,7 +20,8 @@ export default class Modal extends Component {
                 {
                     name: 'NAME',
                     code: 'NAME',
-                    type: 'text'
+                    type: 'text',
+                    hint: '网络名称'
                 },
                 // { name: 'SUBNET', code: 'SUBNET', type: 'text' }, { name: 'GATEWAY', code:
                 // 'GATEWAY', type: 'text' },
@@ -29,7 +30,8 @@ export default class Modal extends Component {
                 {
                     name: 'NAME',
                     code: 'NAME',
-                    type: 'text'
+                    type: 'text',
+                    hint: '存储名称'
                 },
                 //  { name: 'MOUNTPOINT', code: 'MOUNTPOINT', type: 'text' },
             ],
@@ -37,30 +39,36 @@ export default class Modal extends Component {
                 {
                     name: 'NAME',
                     code: 'NAME',
-                    type: 'text'
+                    type: 'text',
+                    hint: '容器名称'
                 }, {
                     name: 'IMAGE',
                     code: 'IMAGE',
                     type: 'select',
-                    options: this.props.images
+                    options: this.props.images,
+                    hint: '容器镜像'
                 }, {
                     name: 'NETWORK',
                     code: 'NETWORK',
                     type: 'select',
-                    options: this.props.networks
+                    options: this.props.networks,
+                    hint: '容器网络'
                 }, {
                     name: 'NETWORK PORT',
                     code: 'NETWORK_PORT',
-                    type: 'text'
+                    type: 'text',
+                    hint: '容器网络端口映射（主机端口:容器端口）'
                 }, {
                     name: 'VOLUME',
                     code: 'VOLUME',
                     type: 'select',
-                    options: this.props.volumes
+                    options: this.props.volumes,
+                    hint: '容器存储'
                 }, {
                     name: 'VOLUME PATH',
                     code: 'VOLUME_PATH',
-                    type: 'text'
+                    type: 'text',
+                    hint: '容器存储挂载路径（/data）'
                 }
             ]
         }

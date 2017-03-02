@@ -56,7 +56,7 @@ class Image extends Component {
                         <TableRow>
                             <TableHeaderColumn>REPO TAGS</TableHeaderColumn>
                             <TableHeaderColumn width='10%'>SIZE</TableHeaderColumn>
-                            <TableHeaderColumn width='10%'>CREATED</TableHeaderColumn>
+                            <TableHeaderColumn width='15%'>CREATED</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody showRowHover={true} displayRowCheckbox={false}>
@@ -67,7 +67,7 @@ class Image extends Component {
                                 return <TableRow key={e.IMAGE_ID} style={lineHeight}>
                                     <TableRowColumn style={lineHeight}>{e.REPO_TAGS}</TableRowColumn>
                                     <TableRowColumn style={lineHeight} width='10%'>{e.SIZE}</TableRowColumn>
-                                    <TableRowColumn style={lineHeight} width='10%'>{e.CREATED}</TableRowColumn>
+                                    <TableRowColumn style={lineHeight} width='15%'>{e.CREATED}</TableRowColumn>
                                 </TableRow>
                             })
 }
