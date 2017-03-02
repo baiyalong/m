@@ -173,7 +173,7 @@ class Process extends Component {
                                     onClick={() => {
                                     this
                                         .get_selected()
-                                        .forEach(e => window.open('/terminal/' + e,))
+                                        .forEach(e => window.open(window.open(`http://${window.location.hostname}:3002?${this.props.processes.find(p => p.CONTAINER_ID == e).NAME}=${e}`)))
                                 }}>
                                     <ConsoleIcon/>
                                 </IconButton>
