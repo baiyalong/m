@@ -44,7 +44,7 @@ class Header extends Component {
           <ToolbarGroup >
             <ToolbarTitle text={this.props.username} style={{ color: 'white' }} />
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} >
-              <IconButton tooltip='注销' onClick={() => this.openDialog()} style={{ zIndex: 1 }}>
+              <IconButton tooltip='注销' onClick={() => this.openDialog()} >
                 <Power color={'white'} />
               </IconButton>
             </div>
