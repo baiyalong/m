@@ -117,8 +117,8 @@ class Process extends Component {
                                 return <TableRow key={e.CONTAINER_ID} ref={e.CONTAINER_ID}>
                                     <TableRowColumn >{e.NAME}</TableRowColumn>
                                     <TableRowColumn >{e.IMAGE}</TableRowColumn>
-                                    <TableRowColumn >{e.NETWORK + e.NETWORK_PORT}</TableRowColumn>
-                                    <TableRowColumn >{e.VOLUME + e.VOLUME_PATH}</TableRowColumn>
+                                    <TableRowColumn >{e.NETWORK + ' | ' + e.NETWORK_PORT}</TableRowColumn>
+                                    <TableRowColumn >{e.VOLUME + ' | ' + e.VOLUME_PATH}</TableRowColumn>
                                     <TableRowColumn >{e.STATUS}</TableRowColumn>
                                 </TableRow>
                             })

@@ -19,7 +19,7 @@ Meteor.methods({
                 Name: e.Names,
                 Image: e.Image,
                 Network: e.HostConfig.NetworkMode,
-                Network_port: e.Ports,
+                Network_port: e.Ports[0].PublicPort + ':' + e.Ports[0].PrivatePort,
                 Volume: e.Mounts[0] && e.Mounts[0].Name,
                 Volume_path: e.Mounts[0] && e.Mounts[0].Destination,
                 Status: e.Status,
@@ -31,7 +31,9 @@ Meteor.methods({
             .find()
             .fetch()
             .filter(e => e.user_id == this.userId && !res.find(r => r.Id == e.Id))
-            .forEach(e => Process.remove({Id: e.Id}))
+            .forEach(e => Process.remove({
+                Id: e.Id
+            }))
     },
     'process.create' (e) {
         var host_port = e.NETWORK_PORT && e
@@ -45,29 +47,27 @@ Meteor.methods({
         var d = {
             AttachStdin: true,
             Tty: true,
-            Cmd: '/bin/sh',
+            // Cmd: '/bin/sh',
             HostConfig: {},
             Labels: {
                 user_id: this.userId
             }
         }
 
-        if (e.NAME) 
+        if (e.NAME)
             d.name = e.NAME
-        if (e.IMAGE) 
+        if (e.IMAGE)
             d.Image = e.IMAGE
-        if (e.NETWORK) 
+        if (e.NETWORK)
             d.HostConfig.NetworkMode = e.NETWORK
         if (e.NETWORK_PORT) {
-            d.ExposedPort = {
+            d.ExposedPorts = {
                 [container_port]: {}
             }
             d.HostConfig.PortBindings = {
-                [container_port]: [
-                    {
-                        HostPort: host_port
-                    }
-                ]
+                [container_port]: [{
+                    HostPort: host_port
+                }]
             }
         }
 
@@ -158,7 +158,13 @@ Meteor.methods({
         var res
         try {
             var process = docker.getContainer(id)
-            res = Meteor.wrapAsync(process.exec, process)({AttachStdin: true, AttachStdout: true, AttachStderr: true, Tty: true, Cmd: ['/bin/sh']})
+            res = Meteor.wrapAsync(process.exec, process)({
+                AttachStdin: true,
+                AttachStdout: true,
+                AttachStderr: true,
+                Tty: true,
+                Cmd: ['/bin/sh']
+            })
         } catch (e) {
             throw new Meteor.Error(e.json.message)
         }
