@@ -19,7 +19,7 @@ Meteor.methods({
                 Name: e.Names,
                 Image: e.Image,
                 Network: e.HostConfig.NetworkMode,
-                Network_port: e.Ports[0].PublicPort + ':' + e.Ports[0].PrivatePort,
+                Network_port: e.Ports[0] ? e.Ports[0].PublicPort + ':' + e.Ports[0].PrivatePort : null,
                 Volume: e.Mounts[0] && e.Mounts[0].Name,
                 Volume_path: e.Mounts[0] && e.Mounts[0].Destination,
                 Status: e.Status,

@@ -180,7 +180,13 @@ export default createContainer(({params}) => {
             .fetch()
             .sort((a, b) => a.Created - b.Created)
             .map(e => {
-                return {NAME: e.Name, MOUNTPOINT: e.Mountpoint}
+                return {
+                    NAME: e.Name,
+                    MOUNTPOINT: e
+                        .Mountpoint
+                        .replace('/var/lib/docker', `\\\\${window.location.hostname}`)
+                        .replace(/\//g, '\\')
+                }
             })
     }
 }, Volume)

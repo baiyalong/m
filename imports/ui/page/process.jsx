@@ -305,9 +305,9 @@ export default createContainer(({params}) => {
                     NAME: e.Name,
                     IMAGE: e.Image,
                     NETWORK: e.Network,
-                    NETWORK_PORT: e.Network_port,
-                    VOLUME: e.Volume,
-                    VOLUME_PATH: e.Volume_path,
+                    NETWORK_PORT: e.Network_port || '',
+                    VOLUME: e.Volume || '',
+                    VOLUME_PATH: e.Volume_path || '',
                     STATUS: e.Status,
                     CREATED: moment(new Date(e.Created * 1000)).format('YYYY-MM-DD')
                 }
